@@ -1,0 +1,12 @@
+[sudo] password for chaitanya: Execution Time: 21.366081 seconds
+
+ Performance counter stats for './columnMajor':
+
+       252,034,678      cache-misses                                                          
+
+      21.492122431 seconds time elapsed
+
+      21.431883000 seconds user
+       0.035043000 seconds sys
+
+

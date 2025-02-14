@@ -1,0 +1,3 @@
+[sudo] password for chaitanya: Execution Time: 5.912434 seconds
+[ perf record: Woken up 5 times to write data ]
+[ perf record: Captured and wrote 1.150 MB perf.data (24669 samples) ]

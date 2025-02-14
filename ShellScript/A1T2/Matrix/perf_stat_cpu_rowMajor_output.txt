@@ -1,0 +1,12 @@
+[sudo] password for chaitanya: Execution Time: 6.030075 seconds
+
+ Performance counter stats for './rowMajor':
+
+          6,116.12 msec cpu-clock                        #    1.004 CPUs utilized             
+
+       6.090377373 seconds time elapsed
+
+       6.109579000 seconds user
+       0.007032000 seconds sys
+
+

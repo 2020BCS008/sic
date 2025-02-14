@@ -1,0 +1,28 @@
+perf list >  perf_events.txt
+
+
+
+grep "\[Hardware event\]" perf_events.txt > hardware_events.txt
+grep "\[Software event\]" perf_events.txt > software_events.txt
+grep "\[Tool event\]" perf_events.txt > tool_events.txt
+
+
+
+
+$ perf stat -e cpu-clock ./matrix_multiply
+This command measures the CPU clock cycles while executing the matrix_multiply program, providing insights into the processor's usage.
+
+$ perf record -e cpu-clock,faults ./matrix_multiply
+This command records performance data, including CPU clock cycles and memory access faults (like page faults) during the execution of matrix_multiply.
+
+$ perf stat -e cache-misses ./matrix_multiply
+This command tracks cache misses while running the matrix_multiply program, helping to understand how often data needs to be fetched from slower memory due to cache misses.
+
+
+
+
+
+
+
+$perf report
+ to get detailed report
