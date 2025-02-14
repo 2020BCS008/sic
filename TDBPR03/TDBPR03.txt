@@ -1,0 +1,116 @@
+### **Two-Phase Locking (2PL) in Databases**
+
+Two-phase locking (2PL) is a **concurrency control protocol** used to ensure **serializability** in transactions, a key requirement for database correctness. The protocol divides the lifecycle of a transaction into two distinct phases:
+
+---
+
+### **Phases in Two-Phase Locking**
+
+#### 1. **Growing Phase**
+- The transaction **acquires locks** on data items it needs.
+- It may acquire:
+  - **Exclusive locks (X-locks):** For write operations (updates/deletes).
+  - **Shared locks (S-locks):** For read operations.
+- Locks are acquired incrementally as the transaction proceeds.
+- **No locks are released** in this phase.
+
+#### 2. **Shrinking Phase**
+- The transaction begins to **release locks** once it has acquired all the locks it needs.
+- No new locks can be acquired during this phase.
+- Typically starts when the transaction either:
+  - Commits: Successfully finishes and releases all locks.
+  - Aborts: Rolls back and releases all locks.
+
+---
+
+### **Steps for Acquiring and Releasing Locks**
+
+#### **Growing Phase: Acquiring Locks**
+1. **Determine Lock Type**:
+   - If the transaction needs to read, request a **shared lock**.
+   - If the transaction needs to write, request an **exclusive lock**.
+2. **Check Lock Compatibility**:
+   - Check if the requested lock can coexist with existing locks on the data item.
+   - Example:
+     - Shared lock (read) can coexist with other shared locks.
+     - Exclusive lock (write) cannot coexist with any other lock.
+3. **Grant Lock**:
+   - If the lock is compatible, grant it to the transaction.
+   - If not, the transaction is placed in a **waiting queue**.
+
+#### **Shrinking Phase: Releasing Locks**
+1. **Release Locks Incrementally**:
+   - Once the transaction completes a part of its operations, it starts releasing locks.
+2. **Ensure No New Locks Are Requested**:
+   - The transaction cannot acquire new locks after it starts releasing locks.
+3. **Commit or Abort**:
+   - Commit: All changes are made permanent, and locks are released.
+   - Abort: Rollback occurs, and all locks are released.
+
+---
+
+### **Types of Locks in Oracle DB**
+
+1. **Shared Lock (S-Lock)**:
+   - Allows multiple transactions to read a data item simultaneously.
+   - Ensures that no transaction can modify the data while it is being read.
+
+   **Example**: A `SELECT` query with a `FOR UPDATE` clause.
+
+2. **Exclusive Lock (X-Lock)**:
+   - Prevents other transactions from reading or modifying the data item.
+   - Used for operations like `INSERT`, `UPDATE`, or `DELETE`.
+
+   **Example**: A `DELETE` or `UPDATE` operation.
+
+3. **Intent Lock**:
+   - A higher-level lock indicating a transaction's intent to lock certain rows in a table.
+   - Helps manage hierarchical locking in large transactions.
+
+   **Example**: `Intent Shared (IS)` or `Intent Exclusive (IX)`.
+
+4. **Row-Level Lock**:
+   - Locks specific rows being modified by a transaction.
+   - Prevents other transactions from modifying those rows.
+
+   **Example**: `SELECT ... FOR UPDATE`.
+
+5. **Table-Level Lock**:
+   - Locks an entire table for operations affecting multiple rows or the structure of the table.
+   - Used for table modifications like `ALTER TABLE`.
+
+---
+
+### **Lock Compatibility Matrix**
+
+| **Requesting Lock** | **Existing Lock** | **Compatible?** |
+|----------------------|-------------------|------------------|
+| Shared (S)          | Shared (S)       | Yes              |
+| Shared (S)          | Exclusive (X)    | No               |
+| Exclusive (X)       | Shared (S)       | No               |
+| Exclusive (X)       | Exclusive (X)    | No               |
+
+---
+
+### **Steps of Two-Phase Locking in Oracle**
+
+1. **Growing Phase**:
+   - Transaction requests locks on data items as needed.
+   - For example, reading data requires a shared lock, and writing data requires an exclusive lock.
+   - Oracle automatically manages row-level and table-level locks depending on the SQL operation.
+
+2. **Shrinking Phase**:
+   - After completing all operations, the transaction releases locks.
+   - Locks are released during the commit or rollback phase.
+
+---
+
+### **Benefits of Two-Phase Locking**
+- Guarantees **serializability**, ensuring that transactions execute in a way that is equivalent to some serial order.
+- Prevents **conflicts** like dirty reads, unrepeatable reads, and lost updates.
+
+### **Drawbacks**
+- **Deadlocks**: Transactions can get stuck waiting for each other to release locks.
+- **Reduced Concurrency**: Transactions may have to wait longer due to locking, leading to performance bottlenecks.
+
+Oracle minimizes these issues by using **multi-version concurrency control (MVCC)** and automatic deadlock detection.
